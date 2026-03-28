@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediMind AI - Chat</title>
+    <!-- Three.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 3D Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="chat-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar glass-container">
+            <div class="sidebar-header">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-staff-snake" style="color: white; font-size: 1.2rem;"></i>
+                </div>
+                <h2>MediMind</h2>
+            </div>
+            
+            <button class="btn new-chat-btn" id="newChatBtn">
+                <i class="fa-solid fa-plus"></i> New Consultation
+            </button>
+
+            <div class="history-list" id="chatHistoryBox">
+                <!-- Chat history items appended here via JS -->
+            </div>
+
+            <div class="api-key-container">
+                 <button class="btn api-key-btn" id="openProfileBtn" style="margin-bottom: 0.5rem; border-color: var(--accent); color: var(--accent);">
+                    <i class="fa-solid fa-file-medical"></i> Medical Profile
+                </button>
+                 <button class="btn api-key-btn" id="openApiKeyModalBtn">
+                    <i class="fa-solid fa-key"></i> Set Gemini API Key
+                </button>
+            </div>
+
+            <div class="user-profile">
+                <div class="user-info">
+                    <div class="user-avatar" id="userInitial">U</div>
+                    <span id="userNameDisplay">User</span>
+                </div>
+                <button class="btn" style="background: transparent; color: var(--error); padding: 0.5rem;" id="logoutBtn" title="Logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-main glass-container">
+            <header class="chat-header">
+                <h3>Consultation Room Alpha</h3>
+                <span style="color: var(--primary-light); font-size: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-circle" style="font-size: 0.5rem; animation: pulse 2s infinite;"></i> Online
+                </span>
+            </header>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- Welcome Message -->
+                <div class="message bot">
+                    <div class="message-avatar">
+                        <i class="fa-solid fa-robot" style="color: white;"></i>
+                    </div>
+                    <div class="message-content">
+                        Hello. I am MediMind, your intelligent healthcare companion. How can I assist you today?
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing Indicator -->
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea id="userInput" placeholder="Describe your symptoms or ask a medical question..."></textarea>
+                    <button class="send-btn" id="sendBtn" disabled>
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- API Key Modal -->
+    <div class="modal" id="apiKeyModal">
+        <div class="modal-content glass-container">
+            <h2 style="margin-bottom: 1rem;">Gemini API Required</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">
+                To enable AI responses, please provide your Google Gemini API Key. It is stored safely in your browser's local storage and not sent to any third party.
+            </p>
+            <div class="input-group">
+                <input type="password" id="apiKeyInput" placeholder="sk-...">
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button class="btn btn-primary" id="saveApiKeyBtn" style="flex: 1;">Save Key</button>
+                <button class="btn" id="closeApiKeyBtn" style="flex: 1; background: transparent; border: 1px solid var(--surface-border); color: white;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medical Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content glass-container" style="max-height: 80vh; overflow-y: auto;">
+            <h2 style="margin-bottom: 1rem; color: var(--accent);">
+                <i class="fa-solid fa-file-medical"></i> My Medical Profile
+            </h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">
+                Save your details here to give MediMind better context when chatting.
+            </p>
+            
+            <div class="input-group" style="margin-bottom: 1rem;">
+                <label>Age</label>
+                <input type="number" id="profileAge" placeholder="e.g. 35">
+            </div>
+            <div class="input-group" style="margin-bottom: 1rem;">
+                <label>Gender / Sex</label>
+                <input type="text" id="profileGender" placeholder="e.g. Female">
+            </div>
+            <div class="input-group" style="margin-bottom: 1rem;">
+                <label>Known Medical Conditions / Diseases</label>
+                <input type="text" id="profileConditions" placeholder="e.g. Asthma, Hypertension">
+            </div>
+            <div class="input-group" style="margin-bottom: 1rem;">
+                <label>Allergies</label>
+                <input type="text" id="profileAllergies" placeholder="e.g. Penicillin, Peanuts">
+            </div>
+            <div class="input-group" style="margin-bottom: 1rem;">
+                <label>Current Symptoms</label>
+                <textarea id="profileSymptoms" placeholder="e.g. Frequent headaches, fatigue..." style="background: rgba(255,255,255,0.05); border: 1px solid var(--surface-border); border-radius: 12px; color: white; padding: 1rem; resize: vertical; min-height: 80px;"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button class="btn btn-primary" id="saveProfileBtn" style="flex: 1;">Save Profile</button>
+                <button class="btn" id="closeProfileBtn" style="flex: 1; background: transparent; border: 1px solid var(--surface-border); color: white;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">Message here</div>
+
+    <!-- Scripts -->
+    <script src="js/3d-bg.js"></script>
+    <!-- Marked for Markdown Parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html>

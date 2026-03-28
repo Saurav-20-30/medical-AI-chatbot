@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediMind 3D - Login</title>
+    <!-- Three.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Premium 3D Splash Screen Intro -->
+    <div id="splashScreen">
+        <div class="splash-content">
+            <h1 class="splash-title">
+                <span class="word">MediMind</span> 
+                <span class="word accent">AI</span>
+            </h1>
+            <div class="splash-line"></div>
+            <p class="splash-subtitle">Initializing Secure Neural Link...</p>
+        </div>
+    </div>
+
+    <!-- 3D Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="auth-wrapper">
+        <div class="auth-box glass-container" id="authBox">
+            <div class="auth-header">
+                <h1>Create Profile</h1>
+                <p>Join the MediMind Network</p>
+            </div>
+
+            <!-- Login Form (Hidden initially) -->
+            <form id="loginForm" class="auth-form" style="display: none;">
+                <div class="input-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" required placeholder="Enter your username">
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top: 1rem; width: 100%;">
+                    Access System <span class="loader" id="loginLoader"></span>
+                </button>
+                <div class="divider" style="text-align: center; margin: 1rem 0; color: var(--text-secondary); font-size: 0.9rem; position: relative;">
+                    <span style="background: var(--surface-dark); padding: 0 10px; position: relative; z-index: 1;">OR</span>
+                    <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: var(--surface-border); z-index: 0;"></div>
+                </div>
+                <button type="button" class="btn google-btn" onclick="handleGoogleAuth()">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 20px; height: 20px;">
+                    Sign in with Google
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form">
+                <div class="input-group">
+                    <label for="reg-username">Choose Username</label>
+                    <input type="text" id="reg-username" required placeholder="e.g. DrSmith">
+                </div>
+                <div class="input-group">
+                    <label for="reg-password">Create Password</label>
+                    <input type="password" id="reg-password" required placeholder="Min 6 characters">
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top: 1rem; width: 100%;">
+                    Create Account <span class="loader" id="regLoader"></span>
+                </button>
+                <div class="divider" style="text-align: center; margin: 1rem 0; color: var(--text-secondary); font-size: 0.9rem; position: relative;">
+                    <span style="background: var(--surface-dark); padding: 0 10px; position: relative; z-index: 1;">OR</span>
+                    <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: var(--surface-border); z-index: 0;"></div>
+                </div>
+                <button type="button" class="btn google-btn" onclick="handleGoogleAuth()">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 20px; height: 20px;">
+                    Sign in with Google
+                </button>
+            </form>
+
+            <div class="auth-switch" id="switchText">
+                Already have an account? <a id="toggleAuthBtn">Login here</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">Message here</div>
+
+    <!-- Scripts -->
+    <script src="js/3d-bg.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
