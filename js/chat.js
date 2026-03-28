@@ -235,16 +235,16 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollToBottom();
 
         // Gemini API CALL
-        const apiKey = localStorage.getItem('gemini_api_key') || 'AIzaSyDdpSuH_QbR18WAIHroEmwnXaRiHutM9jU';
+        const apiKey = localStorage.getItem('gemini_api_key');
         
         if (!apiKey) {
             setTimeout(() => {
                 typingIndicator.classList.remove('active');
-                const reply = "I require a Google Gemini API key to process complex medical language models. Please click 'Set Gemini API Key' in the sidebar.";
+                const reply = "⚠️ **Action Required**: Your previous Gemini API Key was automatically revoked by Google because it was uploaded to a public repository. Please generate a fresh API key at [Google AI Studio](https://aistudio.google.com/app/apikey) and enter it using the 'Set Gemini API Key' button in the bottom left.";
                 appendMessage('bot', reply);
                 currentSessionMessages.push({ sender: 'bot', text: reply });
                 saveChatState();
-            }, 1500);
+            }, 1000);
             return;
         }
 
