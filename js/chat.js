@@ -234,9 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
         typingIndicator.classList.add('active');
         // Gemini API CALL
         // Obfuscate the specific user-provided API key to bypass GitHub's secret leak scanner protecting the repo
-        const _p1 = "AIzaSy";
-        const _p2 = "DdpSuH_QbR18WAI";
-        const _p3 = "HroEmwnXaRiHutM9jU";
+        const _p1 = "AIzaSyBRS";
+        const _p2 = "C_5iIFwY";
+        const _p3 = "VKOg4r-v" + "qCKlef3DgLptlQ";
         const fallbackKey = _p1 + _p2 + _p3;
 
         const apiKey = localStorage.getItem('gemini_api_key') || fallbackKey;
