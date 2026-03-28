@@ -6,6 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    // Sanitize poisoned local storage (remove the known dead google key)
+    if(localStorage.getItem('gemini_api_key') === 'AIzaSyDdpSuH_QbR18WAIHroEmwnXaRiHutM9jU') {
+        localStorage.removeItem('gemini_api_key');
+    }
+
     // Set Initial State
     document.getElementById('userNameDisplay').innerText = activeUser;
     document.getElementById('userInitial').innerText = activeUser.charAt(0).toUpperCase();
@@ -273,6 +278,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
+                if(response.status === 429) {
+                    throw new Error("Rate Limit");
+                }
                 console.warn("API request failed with the provided key. Falling back to simulated response mode.");
                 throw new Error("Invalid API Key");
             }
@@ -288,6 +296,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             typingIndicator.classList.remove('active');
             
+            if (err.message === "Rate Limit") {
+                const limitReply = "I am currently processing too many requests at this moment. Please wait about 60 seconds and try again!";
+                appendMessage('bot', limitReply);
+                currentSessionMessages.push({ sender: 'bot', text: limitReply });
+                saveChatState();
+                showToast("API Rate Limit Reached", true);
+                return;
+            }
+
             // Generate a thoughtful mock response matching the health theme since network failed.
             const mockResponses = [
                 "I understand your concern. While I cannot access my live medical database right now due to an API restriction, I recommend resting and monitoring your symptoms. Please consult a real doctor if conditions worsen.",
